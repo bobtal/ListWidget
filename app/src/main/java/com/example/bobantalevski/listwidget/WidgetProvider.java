@@ -18,6 +18,9 @@ public class WidgetProvider extends AppWidgetProvider{
         for (int id : realAppWidgetIds) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
 
+            Intent serviceIntent = new Intent(context, WidgetService.class);
+            remoteViews.setRemoteAdapter(R.id.listView, serviceIntent);
+
             // get a random color
             int r = (int)(Math.random() * 0xff);
             int g = (int)(Math.random() * 0xff);
