@@ -10,6 +10,8 @@ import android.widget.RemoteViews;
 
 public class WidgetProvider extends AppWidgetProvider{
 
+    public static final String KEY_ITEM = "com.example.bobantalevski.listwidget.KEY_ITEM";
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         int[] realAppWidgetIds = AppWidgetManager.getInstance(context).
@@ -38,7 +40,13 @@ public class WidgetProvider extends AppWidgetProvider{
                     intent,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
-            remoteViews.setOnClickPendingIntent(R.id.frameLayout, pendingIntent);
+//            remoteViews.setOnClickPendingIntent(R.id.frameLayout, pendingIntent);
+            // this sets up a click listener on the frame layout, which we can't click anymore
+            // when we added the list to the widget, as we are clicking on list items
+
+            // Instead, in order to keep the "change color on click" functionality,
+            // we need to add a click listener to each list item like below
+            remoteViews.setPendingIntentTemplate(R.id.listView, pendingIntent);
 
             appWidgetManager.updateAppWidget(id, remoteViews);
         }

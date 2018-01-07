@@ -1,6 +1,7 @@
 package com.example.bobantalevski.listwidget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -36,6 +37,11 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int i) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.list_item);
         remoteViews.setTextViewText(R.id.textView, list[i]);
+
+        Intent fillInIntent = new Intent();
+        fillInIntent.putExtra(WidgetProvider.KEY_ITEM, list[i]);
+        remoteViews.setOnClickFillInIntent(R.id.list_item, fillInIntent);
+
         return remoteViews;
     }
 
