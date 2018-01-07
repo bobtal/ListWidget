@@ -7,10 +7,34 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 public class WidgetProvider extends AppWidgetProvider{
 
     public static final String KEY_ITEM = "com.example.bobantalevski.listwidget.KEY_ITEM";
+    public static final String TOAST_ACTION = "com.example.bobantalevski.listwidget.TOAST_ACTION";
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals(TOAST_ACTION)) {
+            String listItem = intent.getStringExtra(KEY_ITEM);
+            Toast.makeText(context, listItem, Toast.LENGTH_SHORT).show();
+
+            // With this line we are calling onUpdate ourselves whenever there's a toast action
+            // so we get a random color change again whenever there's a click on a list item
+//            onUpdate(context, AppWidgetManager.getInstance(context), null);
+            // We are sending the context, the instance of AppWidgetManager, and since we are not
+            // actually using appWidgetIds in onUpdate, we are passing null as the third parameter
+
+            // Or instead of the line above, we could set the action of the passed intent
+            // to the update action which will be passed on to super.onReceive and it will
+            // trigger the onUpdate method
+//            intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+            // or
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        }
+        super.onReceive(context, intent);
+    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -31,7 +55,10 @@ public class WidgetProvider extends AppWidgetProvider{
             remoteViews.setInt(R.id.frameLayout, "setBackgroundColor", color);
 
             Intent intent = new Intent(context, WidgetProvider.class);
-            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            // Showing a toast by removing the above line and adding the line below
+            // but we don't change the color anymore? So manually call onUpdate in onReceive
+            intent.setAction(TOAST_ACTION);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, realAppWidgetIds);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
